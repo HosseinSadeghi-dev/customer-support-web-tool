@@ -1,5 +1,0 @@
-{"level":"info","message":"::ffff:127.0.0.1 - - [15/Jan/2025:13:13:05 +0000] \"GET /players HTTP/1.1\" 404 146 \"http://localhost:3000/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36\""}
-{"level":"info","message":"::ffff:127.0.0.1 - - [15/Jan/2025:13:13:05 +0000] \"GET /players HTTP/1.1\" 404 146 \"http://localhost:3000/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36\""}
-{"level":"info","message":"Server is running on http://localhost:5000"}
-{"level":"info","message":"::ffff:127.0.0.1 - - [15/Jan/2025:13:13:50 +0000] \"GET /players HTTP/1.1\" 200 2 \"http://localhost:3000/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36\""}
-{"level":"info","message":"::ffff:127.0.0.1 - - [15/Jan/2025:13:13:50 +0000] \"GET /players HTTP/1.1\" 304 - \"http://localhost:3000/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36\""}
