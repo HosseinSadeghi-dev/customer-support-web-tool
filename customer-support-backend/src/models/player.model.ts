@@ -1,9 +1,9 @@
 import db from "../config/database";
 import { addTag } from "../repositories/tag.repo";
 import { addPlayerTag } from "../repositories/playerTag.repo";
-import { PlayerDTO } from "../repositories/player.repo";
-
-type PlayersListResponse = PlayerDTO & { tags: string | string[] };
+import { totalPlayersCount } from "../repositories/player.repo";
+import { PaginationResponse } from "../types/pagination.type";
+import { PlayersListResponse } from "../types/player.type";
 
 const playerlistMapper = (
   players: PlayersListResponse[]
@@ -29,7 +29,12 @@ export const getPlayerById = (id: number) => {
   return db.prepare("SELECT * FROM Players WHERE id = ?").get(id);
 };
 
-export const listPlayers = (tagName?: string): PlayersListResponse[] => {
+export const listPlayers = (
+  tagName?: string,
+  page: number = 0,
+  pageSize: number = 10
+): PaginationResponse<PlayersListResponse> => {
+  const offset = page * pageSize;
   const query = `
     SELECT Players.id, Players.name, GROUP_CONCAT(Tags.name) AS tags
     FROM Players
@@ -37,9 +42,22 @@ export const listPlayers = (tagName?: string): PlayersListResponse[] => {
     LEFT JOIN Tags ON PlayerTags.tag_id = Tags.id
     ${tagName ? "WHERE Tags.name LIKE ?" : ""}
     GROUP BY Players.id
+    LIMIT ? OFFSET ?
   `;
   const res = tagName
-    ? db.prepare(query).all(`%${tagName}%`)
-    : db.prepare(query).all();
-  return playerlistMapper(res as PlayersListResponse[]);
+    ? db.prepare(query).all(`%${tagName}%`, pageSize, offset)
+    : db.prepare(query).all(pageSize, offset);
+
+  const totalItems = totalPlayersCount();
+  const totalPages = Math.ceil(totalItems / pageSize);
+
+  return {
+    data: playerlistMapper(res as PlayersListResponse[]),
+    pagination: {
+      totalItems,
+      totalPages,
+      page,
+      pageSize,
+    },
+  };
 };

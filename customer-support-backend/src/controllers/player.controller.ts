@@ -25,9 +25,13 @@ export const createPlayerHandler = (
 };
 
 export const listPlayersHandler = (
-  req: Request<{}, {}, {}, { search?: string }>,
+  req: Request<{}, {}, {}, { search?: string; page: number; pageSize: number }>,
   res: Response
 ) => {
-  const players = listPlayers(req.query.search);
+  const players = listPlayers(
+    req.query.search,
+    req.query.page,
+    req.query.pageSize
+  );
   res.json(players);
 };

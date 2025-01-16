@@ -1,15 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
 import api from "../../services/api";
 import { Box, Chip, Stack } from "@mui/material";
 import AddPlayerModal from "../AddPlayer/AddPlayerModal";
 import DebounceInput from "../UI/DebounceInput";
-
-interface Player {
-  id: number;
-  name: string;
-  tags: string[];
-}
+import { Player } from "../../types/player.type";
+import { PaginationResponse } from "../../types/pagination.type";
 
 const TagChip: React.FC<{ tagName: string }> = ({ tagName }) => {
   return <Chip label={tagName} variant="outlined" />;
@@ -17,6 +13,11 @@ const TagChip: React.FC<{ tagName: string }> = ({ tagName }) => {
 
 const PlayerList: React.FC = () => {
   const [players, setPlayers] = useState<Player[]>([]);
+  const [playersCount, setPlayersCount] = useState<number>(0);
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    pageSize: 5,
+    page: 0,
+  });
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
@@ -59,19 +60,24 @@ const PlayerList: React.FC = () => {
 
   const fetchPlayers = useCallback(async () => {
     try {
-      const params = searchTerm ? { search: searchTerm } : undefined;
-      const response = await api.get("/players", { params });
-      setPlayers(response.data);
+      const response = await api.get<PaginationResponse<Player>>("/players", {
+        params: {
+          search: searchTerm ?? undefined,
+          ...paginationModel,
+        },
+      });
+      setPlayers(response.data.data);
+      setPlayersCount(response.data.pagination.totalItems);
     } catch (error) {
       console.error("Error fetching players:", error);
     } finally {
       setLoading(false);
     }
-  }, [searchTerm]);
+  }, [searchTerm, paginationModel]);
 
   useEffect(() => {
     fetchPlayers();
-  }, [fetchPlayers, searchTerm]);
+  }, [fetchPlayers, searchTerm, paginationModel]);
 
   return (
     <>
@@ -79,19 +85,22 @@ const PlayerList: React.FC = () => {
         <AddPlayerModal onPlayerAdded={newPlayer} />
         <DebounceInput
           label="Search"
-          placeholder="player tag"
+          placeholder="Player Tag"
           type="text"
           onTextChange={setSearchTerm}
         />
       </Stack>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <DataGrid
+          paginationMode="server"
+          rowCount={playersCount}
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
           rowHeight={100}
           rows={players}
           columns={columns}
           loading={loading}
           getRowId={(row) => row.id}
-          hideFooter={true}
           isRowSelectable={() => false}
         />
       </div>
