@@ -2,7 +2,8 @@ import Database from "better-sqlite3";
 import path from "path";
 
 const dbPath = path.resolve(__dirname, "../../database.sqlite");
-const db = new Database(dbPath, { verbose: console.log });
+// const db = new Database(dbPath, { verbose: console.log });
+const db = new Database(dbPath);
 
 const initializeDatabase = () => {
   const createPlayersTable = `
@@ -31,7 +32,6 @@ const initializeDatabase = () => {
   db.exec(createSanctionsTable);
 };
 
-// Initialize the database schema
 initializeDatabase();
 
 export default db;
