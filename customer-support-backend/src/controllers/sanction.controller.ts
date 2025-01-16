@@ -1,5 +1,9 @@
-import { RequestHandler } from 'express';
-import { addSanction, revokeSanction, listSanctions } from '../models/sanctionModel';
+import { RequestHandler } from "express";
+import {
+  addSanction,
+  revokeSanction,
+  listSanctions,
+} from "../models/sanction.model";
 
 // Handler to add a new sanction
 export const addSanctionHandler: RequestHandler = async (req, res, next) => {
@@ -8,7 +12,7 @@ export const addSanctionHandler: RequestHandler = async (req, res, next) => {
 
     // Validate required fields
     if (!playerId || !type) {
-      res.status(400).json({ error: 'playerId and type are required' });
+      res.status(400).json({ error: "playerId and type are required" });
       return;
     }
 
@@ -16,7 +20,7 @@ export const addSanctionHandler: RequestHandler = async (req, res, next) => {
     const id = addSanction(Number(playerId), type, expiresAt || null);
     res.status(201).json({ id });
   } catch (error) {
-    console.error('Error adding sanction:', error);
+    console.error("Error adding sanction:", error);
     next(error); // Pass the error to the centralized error handler
   }
 };
@@ -28,7 +32,7 @@ export const revokeSanctionHandler: RequestHandler = async (req, res, next) => {
 
     // Validate the sanction ID
     if (!id) {
-      res.status(400).json({ error: 'Sanction ID is required' });
+      res.status(400).json({ error: "Sanction ID is required" });
       return;
     }
 
@@ -36,7 +40,7 @@ export const revokeSanctionHandler: RequestHandler = async (req, res, next) => {
     revokeSanction(Number(id));
     res.sendStatus(204); // No Content
   } catch (error) {
-    console.error('Error revoking sanction:', error);
+    console.error("Error revoking sanction:", error);
     next(error); // Pass the error to the centralized error handler
   }
 };
@@ -48,7 +52,7 @@ export const listSanctionsHandler: RequestHandler = async (req, res, next) => {
 
     // Validate the player ID
     if (!playerId) {
-      res.status(400).json({ error: 'Player ID is required' });
+      res.status(400).json({ error: "Player ID is required" });
       return;
     }
 
@@ -56,7 +60,7 @@ export const listSanctionsHandler: RequestHandler = async (req, res, next) => {
     const sanctions = listSanctions(Number(playerId));
     res.json(sanctions);
   } catch (error) {
-    console.error('Error fetching sanctions:', error);
+    console.error("Error fetching sanctions:", error);
     next(error); // Pass the error to the centralized error handler
   }
 };
