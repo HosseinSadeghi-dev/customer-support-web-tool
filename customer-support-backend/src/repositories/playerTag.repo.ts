@@ -1,3 +1,5 @@
+import db from "../config/database";
+
 export interface PlayerTagDTO {
   player_id: number;
   tag_id: number;
@@ -12,3 +14,11 @@ CREATE TABLE IF NOT EXISTS PlayerTags (
   PRIMARY KEY(player_id, tag_id)
 );
 `;
+
+export const addPlayerTag = (playerId: number, tagId: number): PlayerTagDTO => {
+  const stmt = db.prepare(
+    "INSERT INTO PlayerTags (player_id, tag_id) VALUES (?, ?)"
+  );
+  stmt.run(playerId, tagId);
+  return { player_id: playerId, tag_id: tagId };
+};
