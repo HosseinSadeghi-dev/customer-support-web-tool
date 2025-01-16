@@ -3,21 +3,23 @@ import { Route, Routes } from "react-router";
 import Layout from "./layout/Layout";
 import PlayerList from "./components/Player/PlayerList";
 
-// const Prize = React.lazy(() => import("./components/Prize/Prize.tsx"));
+const PlayerDetail = React.lazy(
+  () => import("./components/Player/PlayerDetail")
+);
 
 const App: React.FC = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<PlayerList />} />
-        {/* <Route
-          path="prize"
+        <Route
+          path="player/:playerId"
           element={
             <React.Suspense fallback={<></>}>
-              <Prize />
+              <PlayerDetail />
             </React.Suspense>
           }
-        /> */}
+        />
         {/*<Route path="*" element={<NoMatch />} />*/}
       </Route>
     </Routes>

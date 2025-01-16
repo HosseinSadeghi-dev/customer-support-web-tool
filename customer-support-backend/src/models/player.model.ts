@@ -25,8 +25,21 @@ export const createPlayer = (name: string, tagNames: string[]) => {
   return playerId;
 };
 
-export const getPlayerById = (id: number) => {
-  return db.prepare("SELECT * FROM Players WHERE id = ?").get(id);
+export const getPlayerById = (id: string): PlayersListResponse => {
+  const query = `
+    SELECT Players.id, Players.name, GROUP_CONCAT(Tags.name) AS tags
+    FROM Players
+    LEFT JOIN PlayerTags ON Players.id = PlayerTags.player_id
+    LEFT JOIN Tags ON PlayerTags.tag_id = Tags.id
+    WHERE Players.id = ?
+    GROUP BY Players.id
+  `;
+
+  const res = db.prepare(query).get(id) as PlayersListResponse;
+  return {
+    ...res,
+    tags: res.tags ? (res.tags as string).split(",") : [],
+  };
 };
 
 export const listPlayers = (

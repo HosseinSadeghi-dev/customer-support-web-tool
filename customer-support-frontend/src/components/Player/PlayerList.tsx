@@ -1,15 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
 import api from "../../services/api";
-import { Box, Chip, Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import DebounceInput from "../UI/DebounceInput";
 import { Player } from "../../types/player.type";
 import { PaginationResponse } from "../../types/pagination.type";
 import AddPlayerModal from "./AddPlayer/AddPlayerModal";
-
-const TagChip: React.FC<{ tagName: string }> = ({ tagName }) => {
-  return <Chip label={tagName} variant="outlined" />;
-};
+import TagChip from "../Tag/TagChip";
 
 const PlayerList: React.FC = () => {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -48,12 +45,12 @@ const PlayerList: React.FC = () => {
   const newPlayer = (name: string, tags: string[], id: number): void => {
     setPlayers((prev) => {
       return [
-        ...prev,
         {
           id,
           name,
           tags,
         },
+        ...prev,
       ];
     });
   };

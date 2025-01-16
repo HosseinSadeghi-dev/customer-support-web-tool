@@ -41,3 +41,12 @@ export const listPlayersHandler = (
   );
   res.json(players);
 };
+
+export const playerDetailHandler = (req: Request, res: Response) => {
+  try {
+    const players = getPlayerById(req.params.id);
+    res.status(200).json(players);
+  } catch (error) {
+    console.error("error", error);
+  }
+};
