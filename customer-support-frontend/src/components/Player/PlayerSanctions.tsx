@@ -60,10 +60,6 @@ const PlayerSanctions: React.FC<Props> = ({ playerId }) => {
     },
   ];
 
-  const newSanctionCreated = (): void => {
-    fetchSanctions();
-  };
-
   const fetchSanctions = useCallback(async () => {
     try {
       const response = await api.get<PaginationResponse<Sanction>>(
@@ -82,6 +78,24 @@ const PlayerSanctions: React.FC<Props> = ({ playerId }) => {
       setLoading(false);
     }
   }, [playerId, paginationModel]);
+
+  const revokeSanction = useCallback(
+    async (sanctionId: string) => {
+      try {
+        await api.patch(`/sanctions/revoke/${sanctionId}`);
+        fetchSanctions();
+      } catch (error) {
+        console.error("Error fetching players:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [fetchSanctions]
+  );
+
+  const newSanctionCreated = (): void => {
+    fetchSanctions();
+  };
 
   useEffect(() => {
     fetchSanctions();

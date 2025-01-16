@@ -27,7 +27,11 @@ export const addSanctionHandler: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const revokeSanctionHandler: RequestHandler = async (req, res, next) => {
+export const revokeSanctionHandler = async (
+  req: Request<{ id: string }>,
+  res,
+  next
+) => {
   try {
     const { id } = req.params;
 
