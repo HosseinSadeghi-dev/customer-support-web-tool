@@ -2,10 +2,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
 import api from "../../services/api";
 import { Box, Chip, Stack } from "@mui/material";
-import AddPlayerModal from "../AddPlayer/AddPlayerModal";
 import DebounceInput from "../UI/DebounceInput";
 import { Player } from "../../types/player.type";
 import { PaginationResponse } from "../../types/pagination.type";
+import AddPlayerModal from "./AddPlayer/AddPlayerModal";
 
 const TagChip: React.FC<{ tagName: string }> = ({ tagName }) => {
   return <Chip label={tagName} variant="outlined" />;

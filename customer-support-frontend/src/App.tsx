@@ -1,22 +1,26 @@
-import React from 'react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import Dashboard from './pages/Dashboard';
+import React from "react";
+import { Route, Routes } from "react-router";
+import Layout from "./layout/Layout";
+import PlayerList from "./components/Player/PlayerList";
 
-const App = () => {
-  const [darkMode, setDarkMode] = React.useState(false);
+// const Prize = React.lazy(() => import("./components/Prize/Prize.tsx"));
 
-  const theme = createTheme({
-    palette: {
-      mode: darkMode ? 'dark' : 'light',
-    },
-  });
-
+const App: React.FC = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Dashboard toggleDarkMode={() => setDarkMode(!darkMode)} />
-    </ThemeProvider>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<PlayerList />} />
+        {/* <Route
+          path="prize"
+          element={
+            <React.Suspense fallback={<></>}>
+              <Prize />
+            </React.Suspense>
+          }
+        /> */}
+        {/*<Route path="*" element={<NoMatch />} />*/}
+      </Route>
+    </Routes>
   );
 };
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TextField, Button } from "@mui/material";
-import api from "../../services/api";
-import TagsInput from "../Tag/TagInput";
+import api from "../../../services/api";
+import TagsInput from "../../Tag/TagInput";
 
 interface Props {
   onPlayerAdded: (name: string, tags: string[], id: number) => void;

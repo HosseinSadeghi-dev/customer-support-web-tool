@@ -1,8 +1,11 @@
+import { AppBar, Button, Toolbar, Typography } from "@mui/material";
 import React from "react";
-import { AppBar, Toolbar, Typography, Button, Container } from "@mui/material";
-import PlayerList from "../components/Player/PlayerList";
 
-const Dashboard = ({ toggleDarkMode }) => {
+interface Props {
+  toggleDarkMode: () => void;
+}
+
+const Header: React.FC<Props> = ({ toggleDarkMode }) => {
   return (
     <>
       <AppBar position="static">
@@ -15,11 +18,8 @@ const Dashboard = ({ toggleDarkMode }) => {
           </Button>
         </Toolbar>
       </AppBar>
-      <Container sx={{ mt: 4 }}>
-        <PlayerList />
-      </Container>
     </>
   );
 };
 
-export default Dashboard;
+export default Header;
