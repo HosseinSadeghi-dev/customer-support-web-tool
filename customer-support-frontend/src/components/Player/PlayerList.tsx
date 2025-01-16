@@ -1,5 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { DataGrid, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridColDef,
+  GridPaginationModel,
+} from "@mui/x-data-grid";
 import api from "../../services/api";
 import { Box, Stack } from "@mui/material";
 import DebounceInput from "../UI/DebounceInput";
@@ -7,8 +12,11 @@ import { Player } from "../../types/player.type";
 import { PaginationResponse } from "../../types/pagination.type";
 import AddPlayerModal from "./AddPlayer/AddPlayerModal";
 import TagChip from "../Tag/TagChip";
+import { useNavigate } from "react-router";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 
 const PlayerList: React.FC = () => {
+  const navigate = useNavigate();
   const [players, setPlayers] = useState<Player[]>([]);
   const [playersCount, setPlayersCount] = useState<number>(0);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -18,29 +26,52 @@ const PlayerList: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 90 },
-    { field: "name", headerName: "Name", width: 150 },
-    {
-      field: "tags",
-      headerName: "Tags",
-      width: 200,
-      renderCell: (params) => (
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            mt: 0.5,
-            gap: 0.5,
-          }}
-        >
-          {params.value?.map((tag: string) => (
-            <TagChip key={tag} tagName={tag} />
-          ))}
-        </Box>
-      ),
+  const goToUserDetail = useCallback(
+    (playerId: any): void => {
+      navigate(`/player/${playerId}`);
     },
-  ];
+    [navigate]
+  );
+
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      { field: "id", headerName: "ID", width: 90 },
+      { field: "name", headerName: "Name", width: 150 },
+      {
+        field: "tags",
+        headerName: "Tags",
+        width: 700,
+        renderCell: (params) => (
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              mt: 0.5,
+              gap: 0.5,
+            }}
+          >
+            {params.value?.map((tag: string) => (
+              <TagChip key={tag} tagName={tag} />
+            ))}
+          </Box>
+        ),
+      },
+      {
+        field: "actions",
+        type: "actions",
+        width: 80,
+        getActions: (params) => [
+          <GridActionsCellItem
+            icon={<ManageAccountsIcon />}
+            label="Detail"
+            onClick={() => goToUserDetail(params.id)}
+            showInMenu
+          />,
+        ],
+      },
+    ],
+    [goToUserDetail]
+  );
 
   const newPlayer = (name: string, tags: string[], id: number): void => {
     setPlayers((prev) => {

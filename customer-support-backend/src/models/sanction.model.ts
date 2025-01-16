@@ -3,12 +3,6 @@ import { totalPlayerSanctionsCount } from "../repositories/sanction.repo";
 import { SanctionDTO, SanctionState } from "../types/sanction.type";
 
 const setSanctionState = (sanction: SanctionDTO): SanctionDTO => {
-  if (sanction.revoked_at) {
-    return {
-      ...sanction,
-      state: SanctionState.Revoked,
-    };
-  }
   if (sanction.expires_at && new Date(sanction.expires_at) < new Date()) {
     return {
       ...sanction,
@@ -57,11 +51,18 @@ export const addSanction = (
   return result.lastInsertRowid;
 };
 
-export const revokeSanction = (id: number) => {
-  db.prepare(
-    'UPDATE Sanctions SET state = "revoked", revoked_at = CURRENT_TIMESTAMP WHERE id = ?'
-  ).run(id);
-  updateSanctionsState();
+export const revokeSanction = (id: string) => {
+  const sanction = db
+    .prepare("SELECT state FROM Sanctions WHERE id = ?")
+    .get(id) as SanctionDTO;
+
+  if (sanction && sanction.state !== SanctionState.Revoked) {
+    const stmt = db.prepare(
+      "UPDATE Sanctions SET state = ?, revoked_at = ? WHERE id = ?"
+    );
+    stmt.run(SanctionState.Revoked, new Date().toISOString(), id);
+    updateSanctionsState();
+  }
 };
 
 export const listSanctions = (

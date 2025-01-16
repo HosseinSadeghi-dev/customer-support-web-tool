@@ -40,7 +40,7 @@ export const revokeSanctionHandler = async (
       return;
     }
 
-    revokeSanction(Number(id));
+    revokeSanction(id);
     res.sendStatus(204);
   } catch (error) {
     console.error("Error revoking sanction:", error);
