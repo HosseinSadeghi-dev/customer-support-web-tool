@@ -1,9 +1,14 @@
-import { RequestHandler } from "express";
+import { Request, RequestHandler } from "express";
 import {
   addSanction,
   revokeSanction,
   listSanctions,
 } from "../models/sanction.model";
+
+interface GetPlayerSanctionsRequest {
+  page: number;
+  pageSize: number;
+}
 
 export const addSanctionHandler: RequestHandler = async (req, res, next) => {
   try {
@@ -39,7 +44,11 @@ export const revokeSanctionHandler: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const listSanctionsHandler: RequestHandler = async (req, res, next) => {
+export const listSanctionsHandler = async (
+  req: Request<{ playerId: string }, {}, {}, GetPlayerSanctionsRequest>,
+  res,
+  next
+) => {
   try {
     const { playerId } = req.params;
 
@@ -48,7 +57,11 @@ export const listSanctionsHandler: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    const sanctions = listSanctions(playerId);
+    const sanctions = listSanctions(
+      playerId,
+      req.query.page,
+      req.query.pageSize
+    );
     res.json(sanctions);
   } catch (error) {
     console.error("Error fetching sanctions:", error);

@@ -20,7 +20,6 @@ const PlayerSanctions: React.FC<Props> = ({ playerId }) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 90 },
     { field: "type", headerName: "Sanction Type", width: 150 },
     { field: "state", headerName: "State", width: 150 },
     {
@@ -38,7 +37,7 @@ const PlayerSanctions: React.FC<Props> = ({ playerId }) => {
     {
       field: "expires_at",
       type: "dateTime",
-      headerName: "Expires",
+      headerName: "Expires Time",
       width: 200,
       valueGetter: (value) => {
         if (value) {
@@ -50,7 +49,7 @@ const PlayerSanctions: React.FC<Props> = ({ playerId }) => {
     {
       field: "revoked_at",
       type: "dateTime",
-      headerName: "Revoked",
+      headerName: "Revoke Time",
       width: 200,
       valueGetter: (value) => {
         if (value) {
@@ -68,7 +67,12 @@ const PlayerSanctions: React.FC<Props> = ({ playerId }) => {
   const fetchSanctions = useCallback(async () => {
     try {
       const response = await api.get<PaginationResponse<Sanction>>(
-        `/sanctions/${playerId}`
+        `/sanctions/${playerId}`,
+        {
+          params: {
+            ...paginationModel,
+          },
+        }
       );
       setSanctions(response.data.data);
       setSanctionCounts(response.data.pagination.totalItems);
@@ -77,7 +81,7 @@ const PlayerSanctions: React.FC<Props> = ({ playerId }) => {
     } finally {
       setLoading(false);
     }
-  }, [playerId]);
+  }, [playerId, paginationModel]);
 
   useEffect(() => {
     fetchSanctions();

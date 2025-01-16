@@ -3,9 +3,9 @@ export interface SanctionDTO {
   player_id: number;
   type: string;
   state: SanctionState;
-  issuedAt: string;
-  expiresAt?: string;
-  revokedAt?: string;
+  issued_at: string;
+  expires_at?: string;
+  revoked_at?: string;
 }
 
 export enum SanctionState {
