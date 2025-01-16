@@ -1,12 +1,5 @@
-export interface SanctionDTO {
-  id: number;
-  player_id: number;
-  type: string;
-  state: "active" | "revoked" | "expired";
-  issued_at: string;
-  expires_at?: string;
-  revoked_at?: string;
-}
+import db from "../config/database";
+import { CountResult } from "../types/db.type";
 
 export const createSanctionsTable = `
   CREATE TABLE IF NOT EXISTS Sanctions (
@@ -20,3 +13,10 @@ export const createSanctionsTable = `
     FOREIGN KEY(player_id) REFERENCES Players(id)
   );
 `;
+
+export const totalPlayerSanctionsCount = (playerId: string): number => {
+  const result = db
+    .prepare("SELECT COUNT(*) as count FROM Sanctions WHERE player_id = ?")
+    .get(playerId) as CountResult;
+  return result.count;
+};

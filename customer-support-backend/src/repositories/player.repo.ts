@@ -1,8 +1,5 @@
 import db from "../config/database";
-
-interface CountResult {
-  count: number;
-}
+import { CountResult } from "../types/db.type";
 
 export const createPlayersTable = `
 CREATE TABLE IF NOT EXISTS Players (

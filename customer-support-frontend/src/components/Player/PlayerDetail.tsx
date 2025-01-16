@@ -1,22 +1,19 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { GridPaginationModel } from "@mui/x-data-grid";
 import api from "../../services/api";
-import { Box, Divider, Stack } from "@mui/material";
+import { Box, CircularProgress, Divider, Stack } from "@mui/material";
 import { Player } from "../../types/player.type";
 import { useParams } from "react-router";
 import TagChip from "../Tag/TagChip";
+import PlayerSanctions from "./PlayerSanctions";
 
 const PlayerDetail: React.FC = () => {
   const { playerId } = useParams();
   const [player, setPlayer] = useState<Player>({} as Player);
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    pageSize: 5,
-    page: 0,
-  });
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchPlayer = useCallback(async () => {
     try {
+      setLoading(true);
       const response = await api.get<Player>(`/players/${playerId}`);
       setPlayer(response.data);
     } catch (error) {
@@ -29,6 +26,19 @@ const PlayerDetail: React.FC = () => {
   useEffect(() => {
     fetchPlayer();
   }, [fetchPlayer]);
+
+  if (loading) {
+    return (
+      <Stack
+        direction="column"
+        justifyItems={"center"}
+        alignItems={"center"}
+        sx={{ mt: 20 }}
+      >
+        <CircularProgress size="6rem" />
+      </Stack>
+    );
+  }
 
   return (
     <>
@@ -67,6 +77,14 @@ const PlayerDetail: React.FC = () => {
             <Divider />
           </>
         )}
+        <Stack
+          direction="column"
+          justifyItems={"flex-start"}
+          alignItems={"stretch"}
+        >
+          <p>Player Sanctions:</p>
+          <PlayerSanctions playerId={playerId as string} />
+        </Stack>
       </Stack>
     </>
   );
