@@ -42,7 +42,7 @@ const TagsInput: React.FC<Props> = ({ onTagsChange }) => {
       freeSolo
       loading={loading}
       getOptionLabel={(option: string) => option}
-      onChange={(event, value) => onTagsChange(value)}
+      onChange={(_, value) => onTagsChange(value)}
       renderOption={(props, option, { selected }) => {
         const { key, ...optionProps } = props;
         return (
@@ -57,7 +57,7 @@ const TagsInput: React.FC<Props> = ({ onTagsChange }) => {
           </li>
         );
       }}
-      style={{ minWidth: "200px" }}
+      style={{ width: "400px" }}
       renderInput={(params) => (
         <TextField {...params} label="Tags" placeholder="Call Of Duty" />
       )}
