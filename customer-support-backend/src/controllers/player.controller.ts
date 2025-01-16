@@ -10,6 +10,12 @@ interface CreatePlayerRequestBody {
   tags: string[];
 }
 
+interface GetPlayersRequest {
+  search?: string;
+  page: number;
+  pageSize: number;
+}
+
 export const createPlayerHandler = (
   req: Request<{}, {}, CreatePlayerRequestBody>,
   res: Response
@@ -25,7 +31,7 @@ export const createPlayerHandler = (
 };
 
 export const listPlayersHandler = (
-  req: Request<{}, {}, {}, { search?: string; page: number; pageSize: number }>,
+  req: Request<{}, {}, {}, GetPlayersRequest>,
   res: Response
 ) => {
   const players = listPlayers(
