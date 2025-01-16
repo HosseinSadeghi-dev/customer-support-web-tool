@@ -3,15 +3,20 @@ import { TextField, Button } from "@mui/material";
 import api from "../../services/api";
 import TagsInput from "../Tag/TagInput";
 
-const AddPlayerForm: React.FC = () => {
+interface Props {
+  onPlayerAdded: (name: string, tags: string[], id: number) => void;
+}
+
+const AddPlayerForm: React.FC<Props> = ({ onPlayerAdded }) => {
   const [name, setName] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.post("/players", { name, tags });
+      const res = await api.post("/players", { name, tags });
       alert("Player added successfully!");
+      onPlayerAdded(name, tags, res.data.id);
       setName("");
       setTags([]);
     } catch (error) {

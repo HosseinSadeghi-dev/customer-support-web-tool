@@ -29,7 +29,7 @@ export const tagExists = (name: string): boolean => {
 
 export const findTagByName = (name: string): TagDTO | null => {
   const stmt = db.prepare("SELECT * FROM Tags WHERE name = ?");
-  const row = stmt.get({ name }) as TagDTO | null;
+  const row = stmt.get(name) as TagDTO | null;
   if (row) {
     return { id: row.id, name: row.name };
   }

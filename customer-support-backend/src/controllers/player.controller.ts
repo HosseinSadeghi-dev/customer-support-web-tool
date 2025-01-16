@@ -15,8 +15,13 @@ export const createPlayerHandler = (
   res: Response
 ) => {
   const { name, tags } = req.body;
-  const id = createPlayer(name, tags);
-  res.status(201).json({ id });
+  try {
+    const id = createPlayer(name, tags);
+    res.status(201).json({ id });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ message: error });
+  }
 };
 
 export const listPlayersHandler = (_req: Request, res: Response) => {

@@ -1,7 +1,6 @@
-import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Container } from '@mui/material';
-import PlayerList from '../components/Player/PlayerList';
-import AddPlayerModal from '../components/AddPlayer/AddPlayerModal';
+import React from "react";
+import { AppBar, Toolbar, Typography, Button, Container } from "@mui/material";
+import PlayerList from "../components/Player/PlayerList";
 
 const Dashboard = ({ toggleDarkMode }) => {
   return (
@@ -17,7 +16,6 @@ const Dashboard = ({ toggleDarkMode }) => {
         </Toolbar>
       </AppBar>
       <Container sx={{ mt: 4 }}>
-        <AddPlayerModal />
         <PlayerList />
       </Container>
     </>

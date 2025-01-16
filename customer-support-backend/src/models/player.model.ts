@@ -3,7 +3,7 @@ import { addTag } from "../repositories/tag.repo";
 import { addPlayerTag } from "../repositories/playerTag.repo";
 import { PlayerDTO } from "../repositories/player.repo";
 
-type PlayersListResponse = PlayerDTO & { tags: string[] };
+type PlayersListResponse = PlayerDTO & { tags: string | string[] };
 
 export const createPlayer = (name: string, tagNames: string[]) => {
   const stmt = db.prepare("INSERT INTO Players (name) VALUES (?)");
@@ -21,7 +21,7 @@ export const getPlayerById = (id: number) => {
 };
 
 export const listPlayers = (): PlayersListResponse[] => {
-  return db
+  const res = db
     .prepare(
       `
     SELECT Players.id, Players.name, GROUP_CONCAT(Tags.name) AS tags
@@ -32,4 +32,8 @@ export const listPlayers = (): PlayersListResponse[] => {
   `
     )
     .all() as PlayersListResponse[];
+  return res.map((player) => ({
+    ...player,
+    tags: player.tags ? (player.tags as string).split(",") : [],
+  }));
 };
