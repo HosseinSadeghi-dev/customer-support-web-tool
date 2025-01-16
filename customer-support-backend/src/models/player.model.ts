@@ -30,17 +30,16 @@ export const getPlayerById = (id: number) => {
 };
 
 export const listPlayers = (tagName?: string): PlayersListResponse[] => {
-  const res = db
-    .prepare(
-      `
+  const query = `
     SELECT Players.id, Players.name, GROUP_CONCAT(Tags.name) AS tags
     FROM Players
     LEFT JOIN PlayerTags ON Players.id = PlayerTags.player_id
     LEFT JOIN Tags ON PlayerTags.tag_id = Tags.id
     ${tagName ? "WHERE Tags.name LIKE ?" : ""}
     GROUP BY Players.id
-  `
-    )
-    .all() as PlayersListResponse[];
-  return playerlistMapper(res);
+  `;
+  const res = tagName
+    ? db.prepare(query).all(`%${tagName}%`)
+    : db.prepare(query).all();
+  return playerlistMapper(res as PlayersListResponse[]);
 };

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import api from "../../services/api";
 import { Box, Chip, Stack } from "@mui/material";
 import AddPlayerModal from "../AddPlayer/AddPlayerModal";
+import DebounceInput from "../UI/DebounceInput";
 
 interface Player {
   id: number;
@@ -17,6 +18,7 @@ const TagChip: React.FC<{ tagName: string }> = ({ tagName }) => {
 const PlayerList: React.FC = () => {
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 90 },
@@ -55,25 +57,32 @@ const PlayerList: React.FC = () => {
     });
   };
 
-  useEffect(() => {
-    const fetchPlayers = async () => {
-      try {
-        const response = await api.get("/players");
-        setPlayers(response.data);
-      } catch (error) {
-        console.error("Error fetching players:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchPlayers = useCallback(async () => {
+    try {
+      const params = searchTerm ? { search: searchTerm } : undefined;
+      const response = await api.get("/players", { params });
+      setPlayers(response.data);
+    } catch (error) {
+      console.error("Error fetching players:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [searchTerm]);
 
+  useEffect(() => {
     fetchPlayers();
-  }, []);
+  }, [fetchPlayers, searchTerm]);
 
   return (
     <>
-      <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+      <Stack direction="row" spacing={1} sx={{ mb: 1 }} alignItems={"center"}>
         <AddPlayerModal onPlayerAdded={newPlayer} />
+        <DebounceInput
+          label="Search"
+          placeholder="player tag"
+          type="text"
+          onTextChange={setSearchTerm}
+        />
       </Stack>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <DataGrid
