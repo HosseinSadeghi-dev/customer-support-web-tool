@@ -4,6 +4,7 @@ import { addPlayerTag } from "../repositories/playerTag.repo";
 import { totalPlayersCount } from "../repositories/player.repo";
 import { PaginationResponse } from "../types/pagination.type";
 import { PlayersListResponse } from "../types/player.type";
+import { SanctionState } from "../types/sanction.type";
 
 const playerlistMapper = (
   players: PlayersListResponse[]
@@ -49,17 +50,20 @@ export const listPlayers = (
 ): PaginationResponse<PlayersListResponse> => {
   const offset = page * pageSize;
   const query = `
-    SELECT Players.id, Players.name, GROUP_CONCAT(Tags.name) AS tags
+    SELECT Players.id, Players.name, GROUP_CONCAT(Tags.name) AS tags, GROUP_CONCAT(Sanctions.type) AS activeSanction
     FROM Players
     LEFT JOIN PlayerTags ON Players.id = PlayerTags.player_id
     LEFT JOIN Tags ON PlayerTags.tag_id = Tags.id
+    LEFT JOIN Sanctions ON Players.id = Sanctions.player_id AND Sanctions.state = ?
     ${tagName ? "WHERE Tags.name LIKE ?" : ""}
     GROUP BY Players.id
     LIMIT ? OFFSET ?
   `;
   const res = tagName
-    ? db.prepare(query).all(`%${tagName}%`, pageSize, offset)
-    : db.prepare(query).all(pageSize, offset);
+    ? db
+        .prepare(query)
+        .all(`%${tagName}%`, SanctionState.Active, pageSize, offset)
+    : db.prepare(query).all(SanctionState.Active, pageSize, offset);
 
   const totalItems = totalPlayersCount();
   const totalPages = Math.ceil(totalItems / pageSize);

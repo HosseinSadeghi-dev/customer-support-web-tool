@@ -37,10 +37,11 @@ const PlayerList: React.FC = () => {
     () => [
       { field: "id", headerName: "ID", width: 90 },
       { field: "name", headerName: "Name", width: 150 },
+      { field: "activeSanction", headerName: "Active Sanction", width: 150 },
       {
         field: "tags",
         headerName: "Tags",
-        width: 700,
+        width: 400,
         renderCell: (params) => (
           <Box
             sx={{
@@ -123,7 +124,7 @@ const PlayerList: React.FC = () => {
           rowCount={playersCount}
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
-          rowHeight={100}
+          rowHeight={70}
           rows={players}
           columns={columns}
           loading={loading}

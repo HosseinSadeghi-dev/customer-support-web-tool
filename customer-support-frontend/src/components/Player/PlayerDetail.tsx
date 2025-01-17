@@ -65,7 +65,7 @@ const PlayerDetail: React.FC = () => {
           Player Name: <b>{player.name}</b>
         </p>
         <Divider />
-        {player?.tags?.length && (
+        {!!player?.tags?.length && (
           <>
             <p>
               Player Tags:{" "}
