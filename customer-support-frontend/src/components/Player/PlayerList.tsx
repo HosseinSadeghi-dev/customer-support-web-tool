@@ -6,7 +6,15 @@ import {
   GridPaginationModel,
 } from "@mui/x-data-grid";
 import api from "../../services/api";
-import { Alert, Box, Chip, Snackbar, Stack } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Chip,
+  IconButton,
+  Snackbar,
+  Stack,
+  Tooltip,
+} from "@mui/material";
 import DebounceInput from "../UI/DebounceInput";
 import { Player } from "../../types/player.type";
 import { PaginationResponse } from "../../types/pagination.type";
@@ -82,12 +90,15 @@ const PlayerList: React.FC = () => {
         type: "actions",
         width: 190,
         getActions: (params) => [
-          <GridActionsCellItem
-            icon={<ManageAccountsIcon />}
-            label="Detail"
-            onClick={() => goToUserDetail(params.id)}
-            showInMenu
-          />,
+          <Tooltip title="Player Detail">
+            <IconButton
+              color="primary"
+              onClick={() => goToUserDetail(params.id)}
+              aria-label="Player Detail"
+            >
+              <ManageAccountsIcon />
+            </IconButton>
+          </Tooltip>,
           <AddPlayerModal
             onPlayerAdded={newPlayer}
             onPlayerEdited={playerEdited}

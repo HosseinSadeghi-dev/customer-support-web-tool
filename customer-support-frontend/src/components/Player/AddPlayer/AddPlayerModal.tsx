@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Button, Modal, Box } from "@mui/material";
+import { Button, Modal, Box, IconButton, Tooltip } from "@mui/material";
 import AddPlayerForm from "./AddPlayerForm";
 import { Player } from "../../../types/player.type";
 import { Add, Edit } from "@mui/icons-material";
@@ -34,14 +34,29 @@ const AddPlayerModal: React.FC<Props> = ({
 
   return (
     <div>
-      <Button
-        variant={isEditingBtn ? "outlined" : "contained"}
-        onClick={handleOpen}
-        size={isEditingBtn ? "small" : "medium"}
-        startIcon={isEditingBtn ? <Edit /> : <Add />}
-      >
-        {isEditingBtn ? "Edit Player" : "Add Player"}
-      </Button>
+      {isEditingBtn ? (
+        <>
+          <Tooltip title="Edit Player">
+            <IconButton
+              color="primary"
+              onClick={handleOpen}
+              aria-label="Edit Player"
+            >
+              <Edit />
+            </IconButton>
+          </Tooltip>
+        </>
+      ) : (
+        <Button
+          variant={"contained"}
+          onClick={handleOpen}
+          size={"medium"}
+          startIcon={<Add />}
+        >
+          {"Add Player"}
+        </Button>
+      )}
+
       <Modal open={open} onClose={handleClose}>
         <Box
           sx={{
