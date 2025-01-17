@@ -1,2 +1,3 @@
 node_modules
 customer-support-backend/logs/app.log
+customer-support-frontend/build
