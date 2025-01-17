@@ -1,11 +1,13 @@
+import { DarkMode, LightMode } from "@mui/icons-material";
 import { AppBar, Button, Toolbar, Typography } from "@mui/material";
 import React from "react";
 
 interface Props {
   toggleDarkMode: () => void;
+  darkMode: boolean;
 }
 
-const Header: React.FC<Props> = ({ toggleDarkMode }) => {
+const Header: React.FC<Props> = ({ toggleDarkMode, darkMode }) => {
   return (
     <>
       <AppBar position="static">
@@ -13,8 +15,12 @@ const Header: React.FC<Props> = ({ toggleDarkMode }) => {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Customer Support Tool
           </Typography>
-          <Button color="inherit" onClick={toggleDarkMode}>
-            Toggle Theme
+          <Button
+            color="inherit"
+            onClick={toggleDarkMode}
+            startIcon={darkMode ? <LightMode /> : <DarkMode />}
+          >
+            {darkMode ? "Light Mode" : "Dark Mode"}
           </Button>
         </Toolbar>
       </AppBar>
