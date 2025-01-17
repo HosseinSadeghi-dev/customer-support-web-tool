@@ -11,9 +11,10 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 interface Props {
   onTagsChange: (tags: string[]) => void;
+  prevSelectedTags: string[];
 }
 
-const TagsInput: React.FC<Props> = ({ onTagsChange }) => {
+const TagsInput: React.FC<Props> = ({ onTagsChange, prevSelectedTags }) => {
   const [tags, setTags] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -41,6 +42,7 @@ const TagsInput: React.FC<Props> = ({ onTagsChange }) => {
       disableCloseOnSelect
       freeSolo
       loading={loading}
+      value={prevSelectedTags}
       getOptionLabel={(option: string) => option}
       onChange={(_, value) => onTagsChange(value)}
       renderOption={(props, option, { selected }) => {

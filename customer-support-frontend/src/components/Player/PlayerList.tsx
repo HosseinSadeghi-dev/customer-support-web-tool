@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   DataGrid,
   GridActionsCellItem,
+  GridActionsCellItemProps,
   GridColDef,
   GridPaginationModel,
 } from "@mui/x-data-grid";
@@ -37,6 +38,9 @@ const PlayerList: React.FC = () => {
     () => [
       { field: "id", headerName: "ID", width: 90 },
       { field: "name", headerName: "Name", width: 150 },
+      { field: "isVip", headerName: "VIP", width: 40, type: "boolean" },
+      { field: "email", headerName: "Email", width: 150 },
+      { field: "discordUsername", headerName: "Discord Username", width: 150 },
       {
         field: "activeSanction",
         headerName: "Active Sanction",
@@ -50,12 +54,14 @@ const PlayerList: React.FC = () => {
       {
         field: "tags",
         headerName: "Tags",
-        width: 400,
+        width: 200,
         renderCell: (params) => (
           <Box
             sx={{
               display: "flex",
               flexWrap: "wrap",
+              justifyContent: "center",
+              alignItems: "center",
               mt: 0.5,
               gap: 0.5,
             }}
@@ -69,12 +75,18 @@ const PlayerList: React.FC = () => {
       {
         field: "actions",
         type: "actions",
-        width: 80,
+        width: 180,
         getActions: (params) => [
           <GridActionsCellItem
             icon={<ManageAccountsIcon />}
             label="Detail"
             onClick={() => goToUserDetail(params.id)}
+            showInMenu
+          />,
+          <AddPlayerModal
+            onPlayerAdded={newPlayer}
+            onPlayerEdited={playerEdited}
+            player={params.row}
           />,
         ],
       },
@@ -82,16 +94,15 @@ const PlayerList: React.FC = () => {
     [goToUserDetail]
   );
 
-  const newPlayer = (name: string, tags: string[], id: number): void => {
+  const newPlayer = (player: Partial<Player>): void => {
     setPlayers((prev) => {
-      return [
-        {
-          id,
-          name,
-          tags,
-        },
-        ...prev,
-      ];
+      return [player as Player, ...prev];
+    });
+  };
+
+  const playerEdited = (player: Partial<Player>): void => {
+    setPlayers((prev) => {
+      return prev.map((p) => (p.id === player.id ? { ...p, ...player } : p));
     });
   };
 
@@ -119,7 +130,10 @@ const PlayerList: React.FC = () => {
   return (
     <>
       <Stack direction="row" spacing={1} sx={{ mb: 1 }} alignItems={"center"}>
-        <AddPlayerModal onPlayerAdded={newPlayer} />
+        <AddPlayerModal
+          onPlayerAdded={newPlayer}
+          onPlayerEdited={playerEdited}
+        />
         <DebounceInput
           label="Search"
           placeholder="Player Tag"

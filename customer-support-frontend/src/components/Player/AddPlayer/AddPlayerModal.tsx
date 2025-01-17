@@ -1,19 +1,31 @@
 import React, { useState } from "react";
 import { Button, Modal, Box } from "@mui/material";
 import AddPlayerForm from "./AddPlayerForm";
+import { Player } from "../../../types/player.type";
 
 interface Props {
-  onPlayerAdded: (name: string, tags: string[], id: number) => void;
+  onPlayerAdded: (player: Partial<Player>) => void;
+  onPlayerEdited: (player: Partial<Player>) => void;
+  player?: Partial<Player>;
 }
 
-const AddPlayerModal: React.FC<Props> = ({ onPlayerAdded }) => {
+const AddPlayerModal: React.FC<Props> = ({
+  onPlayerAdded,
+  onPlayerEdited,
+  player,
+}) => {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const playerAddedHandler = (name: string, tags: string[], id: number) => {
-    onPlayerAdded(name, tags, id);
+  const playerAddedHandler = (player: Partial<Player>) => {
+    onPlayerAdded(player);
+    setOpen(false);
+  };
+
+  const playerEditedHandler = (player: Partial<Player>) => {
+    onPlayerEdited(player);
     setOpen(false);
   };
 
@@ -24,7 +36,7 @@ const AddPlayerModal: React.FC<Props> = ({ onPlayerAdded }) => {
         onClick={handleOpen}
         style={{ marginBottom: "8px" }}
       >
-        Add Player
+        {player?.id ? "Edit Player" : "Add Player"}
       </Button>
       <Modal open={open} onClose={handleClose}>
         <Box
@@ -38,7 +50,11 @@ const AddPlayerModal: React.FC<Props> = ({ onPlayerAdded }) => {
             p: 4,
           }}
         >
-          <AddPlayerForm onPlayerAdded={playerAddedHandler} />
+          <AddPlayerForm
+            onPlayerAdded={playerAddedHandler}
+            onPlayerEdited={playerEditedHandler}
+            player={player}
+          />
         </Box>
       </Modal>
     </div>

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import {
   createPlayer,
+  editPlayer,
   getPlayerById,
   listPlayers,
 } from "../models/player.model";
@@ -8,6 +9,13 @@ import {
 interface CreatePlayerRequestBody {
   name: string;
   tags: string[];
+  isVip?: boolean;
+  email?: string;
+  discordUsername?: string;
+}
+
+interface EditPlayerRequestBody extends CreatePlayerRequestBody {
+  id: number;
 }
 
 interface GetPlayersRequest {
@@ -20,10 +28,24 @@ export const createPlayerHandler = (
   req: Request<{}, {}, CreatePlayerRequestBody>,
   res: Response
 ) => {
-  const { name, tags } = req.body;
+  const { name, tags, isVip, email, discordUsername } = req.body;
   try {
-    const id = createPlayer(name, tags);
+    const id = createPlayer(name, tags, isVip, email, discordUsername);
     res.status(201).json({ id });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ message: error });
+  }
+};
+
+export const editPlayerHandler = (
+  req: Request<{}, {}, EditPlayerRequestBody>,
+  res: Response
+) => {
+  const { id, name, tags, isVip, email, discordUsername } = req.body;
+  try {
+    editPlayer(id, name, tags, isVip, email, discordUsername);
+    res.status(201).json({});
   } catch (error) {
     console.error(error);
     res.status(400).json({ message: error });
