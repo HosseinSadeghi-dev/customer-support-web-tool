@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   DataGrid,
   GridActionsCellItem,
-  GridActionsCellItemProps,
   GridColDef,
   GridPaginationModel,
 } from "@mui/x-data-grid";
@@ -129,16 +128,23 @@ const PlayerList: React.FC = () => {
 
   return (
     <>
-      <Stack direction="row" spacing={1} sx={{ mb: 1 }} alignItems={"center"}>
-        <AddPlayerModal
-          onPlayerAdded={newPlayer}
-          onPlayerEdited={playerEdited}
-        />
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{ mb: 1 }}
+        alignItems={"center"}
+        justifyContent={"space-between"}
+      >
         <DebounceInput
           label="Search"
           placeholder="Player Tag"
           type="text"
+          size="small"
           onTextChange={setSearchTerm}
+        />
+        <AddPlayerModal
+          onPlayerAdded={newPlayer}
+          onPlayerEdited={playerEdited}
         />
       </Stack>
       <div style={{ display: "flex", flexDirection: "column" }}>
