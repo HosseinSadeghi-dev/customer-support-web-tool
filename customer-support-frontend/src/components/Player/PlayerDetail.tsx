@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import api from "../../services/api";
-import { Box, CircularProgress, Divider, Stack } from "@mui/material";
+import { Box, Button, CircularProgress, Divider, Stack } from "@mui/material";
 import { Player } from "../../types/player.type";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import TagChip from "../Tag/TagChip";
 import PlayerSanctions from "./PlayerSanctions";
 
 const PlayerDetail: React.FC = () => {
+  const navigate = useNavigate();
   const { playerId } = useParams();
   const [player, setPlayer] = useState<Player>({} as Player);
   const [loading, setLoading] = useState<boolean>(true);
@@ -49,6 +50,13 @@ const PlayerDetail: React.FC = () => {
         justifyItems={"flex-start"}
         alignItems={"stretch"}
       >
+        <Button
+          variant="outlined"
+          onClick={() => navigate("/")}
+          sx={{ alignSelf: "flex-end" }}
+        >
+          Go Back To Dashboard
+        </Button>
         <p>
           Player ID: <b>{playerId}</b>
         </p>

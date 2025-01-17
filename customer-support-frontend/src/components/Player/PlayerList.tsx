@@ -65,7 +65,6 @@ const PlayerList: React.FC = () => {
             icon={<ManageAccountsIcon />}
             label="Detail"
             onClick={() => goToUserDetail(params.id)}
-            showInMenu
           />,
         ],
       },
