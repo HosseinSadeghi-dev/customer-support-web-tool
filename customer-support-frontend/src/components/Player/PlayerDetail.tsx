@@ -57,14 +57,31 @@ const PlayerDetail: React.FC = () => {
         >
           Go Back To Dashboard
         </Button>
+
         <p>
           Player ID: <b>{playerId}</b>
         </p>
         <Divider />
+
         <p>
-          Player Name: <b>{player.name}</b>
+          Player Name:{" "}
+          <b>
+            {player.name}
+            {player.isVip && <span>⭐</span>}
+          </b>
         </p>
         <Divider />
+
+        <p>
+          Player Email: <b>{player.email ?? "-"}</b>
+        </p>
+        <Divider />
+
+        <p>
+          Player Discord Username: <b>{player.discordUsername ?? "-"}</b>
+        </p>
+        <Divider />
+
         {!!player?.tags?.length && (
           <>
             <p>

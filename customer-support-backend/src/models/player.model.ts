@@ -64,7 +64,13 @@ export const editPlayer = (
 
 export const getPlayerById = (id: string): PlayersListResponse => {
   const query = `
-    SELECT Players.id, Players.name, GROUP_CONCAT(Tags.name) AS tags
+    SELECT 
+    Players.id, 
+    Players.name,
+     Players.email,
+      Players.discord_username AS discordUsername, 
+      CASE WHEN Players.is_vip = 1 THEN TRUE ELSE FALSE END AS isVip,
+      GROUP_CONCAT(Tags.name) AS tags
     FROM Players
     LEFT JOIN PlayerTags ON Players.id = PlayerTags.player_id
     LEFT JOIN Tags ON PlayerTags.tag_id = Tags.id
