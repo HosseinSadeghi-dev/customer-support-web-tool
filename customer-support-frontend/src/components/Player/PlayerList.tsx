@@ -6,7 +6,7 @@ import {
   GridPaginationModel,
 } from "@mui/x-data-grid";
 import api from "../../services/api";
-import { Box, Stack } from "@mui/material";
+import { Box, Chip, Stack } from "@mui/material";
 import DebounceInput from "../UI/DebounceInput";
 import { Player } from "../../types/player.type";
 import { PaginationResponse } from "../../types/pagination.type";
@@ -37,7 +37,16 @@ const PlayerList: React.FC = () => {
     () => [
       { field: "id", headerName: "ID", width: 90 },
       { field: "name", headerName: "Name", width: 150 },
-      { field: "activeSanction", headerName: "Active Sanction", width: 150 },
+      {
+        field: "activeSanction",
+        headerName: "Active Sanction",
+        width: 150,
+        renderCell: (param) => {
+          return param.value ? (
+            <Chip label={param.value} color="error" />
+          ) : null;
+        },
+      },
       {
         field: "tags",
         headerName: "Tags",

@@ -1,5 +1,6 @@
 import db from "../config/database";
 import { totalPlayerSanctionsCount } from "../repositories/sanction.repo";
+import { CountResult } from "../types/db.type";
 import { SanctionDTO, SanctionState } from "../types/sanction.type";
 
 const setSanctionState = (sanction: SanctionDTO): SanctionDTO => {
@@ -42,6 +43,18 @@ export const addSanction = (
   type: string,
   expiresAt: string | null
 ) => {
+  const activeSanctionCheck = db
+    .prepare(
+      "SELECT COUNT(*) as count FROM Sanctions WHERE player_id = ? AND state = ?"
+    )
+    .get(playerId, SanctionState.Active) as CountResult;
+
+  if (activeSanctionCheck.count > 0) {
+    throw new Error(
+      "Cannot add a new sanction while there are active sanctions."
+    );
+  }
+
   const stmt = db.prepare(`
     INSERT INTO Sanctions (player_id, type, expires_at)
     VALUES (?, ?, ?)
