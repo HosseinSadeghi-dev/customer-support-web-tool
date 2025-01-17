@@ -86,7 +86,12 @@ export const listSanctions = (
   updateSanctionsState();
   const offset = page * pageSize;
 
-  const query = "SELECT * FROM Sanctions WHERE player_id = ? LIMIT ? OFFSET ?";
+  const query = `
+  SELECT * FROM Sanctions 
+  WHERE player_id = ? 
+  ORDER BY Sanctions.issued_at DESC
+  LIMIT ? OFFSET ?
+  `;
   const res = db
     .prepare(query)
     .all(playerId, pageSize, offset) as SanctionDTO[];

@@ -57,6 +57,7 @@ export const listPlayers = (
     LEFT JOIN Sanctions ON Players.id = Sanctions.player_id AND Sanctions.state = ?
     ${tagName ? "WHERE Tags.name LIKE ?" : ""}
     GROUP BY Players.id
+    ORDER BY Players.created_at DESC
     LIMIT ? OFFSET ?
   `;
   const res = tagName
