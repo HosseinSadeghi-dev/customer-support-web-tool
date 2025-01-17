@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Button, Modal, Box } from "@mui/material";
 import AddPlayerForm from "./AddPlayerForm";
 import { Player } from "../../../types/player.type";
+import { Add, Edit } from "@mui/icons-material";
 
 interface Props {
   onPlayerAdded: (player: Partial<Player>) => void;
@@ -19,6 +20,8 @@ const AddPlayerModal: React.FC<Props> = ({
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const isEditingBtn = useMemo(() => !!player?.id, [player]);
+
   const playerAddedHandler = (player: Partial<Player>) => {
     onPlayerAdded(player);
     setOpen(false);
@@ -31,8 +34,13 @@ const AddPlayerModal: React.FC<Props> = ({
 
   return (
     <div>
-      <Button variant="contained" onClick={handleOpen}>
-        {player?.id ? "Edit Player" : "Add Player"}
+      <Button
+        variant={isEditingBtn ? "outlined" : "contained"}
+        onClick={handleOpen}
+        size={isEditingBtn ? "small" : "medium"}
+        startIcon={isEditingBtn ? <Edit /> : <Add />}
+      >
+        {isEditingBtn ? "Edit Player" : "Add Player"}
       </Button>
       <Modal open={open} onClose={handleClose}>
         <Box

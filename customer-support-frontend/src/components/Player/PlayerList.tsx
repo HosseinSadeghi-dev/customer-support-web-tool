@@ -74,7 +74,7 @@ const PlayerList: React.FC = () => {
       {
         field: "actions",
         type: "actions",
-        width: 180,
+        width: 190,
         getActions: (params) => [
           <GridActionsCellItem
             icon={<ManageAccountsIcon />}
