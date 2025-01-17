@@ -104,15 +104,16 @@ export const listPlayers = (
     LEFT JOIN PlayerTags ON Players.id = PlayerTags.player_id
     LEFT JOIN Tags ON PlayerTags.tag_id = Tags.id
     LEFT JOIN Sanctions ON Players.id = Sanctions.player_id AND Sanctions.state = ?
-    ${tagName ? "WHERE Tags.name LIKE ?" : ""}
+    ${tagName ? "WHERE LOWER(Tags.name) LIKE LOWER(?)" : ""}
     GROUP BY Players.id
     ORDER BY Players.created_at DESC
     LIMIT ? OFFSET ?
   `;
+
   const res = tagName
     ? db
         .prepare(query)
-        .all(`%${tagName}%`, SanctionState.Active, pageSize, offset)
+        .all(SanctionState.Active, `%${tagName}%`, pageSize, offset)
     : db.prepare(query).all(SanctionState.Active, pageSize, offset);
 
   const totalItems = totalPlayersCount();
