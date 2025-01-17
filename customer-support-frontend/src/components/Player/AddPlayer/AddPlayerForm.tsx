@@ -5,6 +5,8 @@ import {
   Checkbox,
   FormGroup,
   FormControlLabel,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import api from "../../../services/api";
 import TagsInput from "../../Tag/TagInput";
@@ -26,6 +28,8 @@ const AddPlayerForm: React.FC<Props> = ({
   const [email, setEmail] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
   const [isVip, setIsVip] = useState<boolean>(false);
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,25 +44,21 @@ const AddPlayerForm: React.FC<Props> = ({
     try {
       const playerPayload: Partial<Player> = {
         name,
-        discordUsername,
-        email,
+        ...(discordUsername ? { discordUsername } : {}),
+        ...(email ? { email } : {}),
         tags,
         isVip,
       };
       const res = await api.post("/players", playerPayload);
-      alert("Player added successfully!");
       onPlayerAdded({
         ...playerPayload,
         id: res.data.id,
       });
-      setDiscordUsername("");
-      setEmail("");
-      setName("");
-      setTags([]);
-      setIsVip(false);
+      resetForm();
     } catch (error) {
       console.error("Error adding player:", error);
-      alert("Failed to add player.");
+      setSnackbarMessage("Failed to add player.");
+      setSnackbarOpen(true);
     }
   };
 
@@ -73,19 +73,23 @@ const AddPlayerForm: React.FC<Props> = ({
         isVip,
       };
       await api.put("/players", playerPayload);
-      alert("Player Edited successfully!");
       onPlayerEdited({
         ...playerPayload,
       });
-      setDiscordUsername("");
-      setEmail("");
-      setName("");
-      setTags([]);
-      setIsVip(false);
+      resetForm();
     } catch (error) {
       console.error("Error Editing player:", error);
-      alert("Failed to Edit player.");
+      setSnackbarMessage("Failed to edit player.");
+      setSnackbarOpen(true);
     }
+  };
+
+  const resetForm = () => {
+    setDiscordUsername("");
+    setEmail("");
+    setName("");
+    setTags([]);
+    setIsVip(false);
   };
 
   useEffect(() => {
@@ -98,50 +102,70 @@ const AddPlayerForm: React.FC<Props> = ({
     }
   }, [player]);
 
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        alignItems: "stretch",
-        gap: "1rem",
-      }}
-    >
-      <TextField
-        label="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        required
-      />
-      <TextField
-        label="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        type="email"
-      />
-      <TextField
-        label="Discord Username"
-        value={discordUsername}
-        onChange={(e) => setDiscordUsername(e.target.value)}
-      />
-      <TagsInput onTagsChange={setTags} prevSelectedTags={tags} />
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={isVip}
-              onChange={(_, checked) => setIsVip(checked)}
-            />
-          }
-          label="VIP"
+    <>
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-start",
+          alignItems: "stretch",
+          gap: "1rem",
+        }}
+      >
+        <TextField
+          label="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
         />
-      </FormGroup>
-      <Button type="submit" variant="contained" color="primary">
-        {player?.id ? "Edit Player" : "Add Player"}
-      </Button>
-    </form>
+        <TextField
+          label="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          type="email"
+        />
+        <TextField
+          label="Discord Username"
+          value={discordUsername}
+          onChange={(e) => setDiscordUsername(e.target.value)}
+        />
+        <TagsInput onTagsChange={setTags} prevSelectedTags={tags} />
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={isVip}
+                onChange={(_, checked) => setIsVip(checked)}
+              />
+            }
+            label="VIP"
+          />
+        </FormGroup>
+        <Button type="submit" variant="contained" color="primary">
+          {player?.id ? "Edit Player" : "Add Player"}
+        </Button>
+      </form>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </>
   );
 };
 

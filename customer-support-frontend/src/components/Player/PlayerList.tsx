@@ -6,7 +6,7 @@ import {
   GridPaginationModel,
 } from "@mui/x-data-grid";
 import api from "../../services/api";
-import { Box, Chip, Stack } from "@mui/material";
+import { Alert, Box, Chip, Snackbar, Stack } from "@mui/material";
 import DebounceInput from "../UI/DebounceInput";
 import { Player } from "../../types/player.type";
 import { PaginationResponse } from "../../types/pagination.type";
@@ -25,6 +25,8 @@ const PlayerList: React.FC = () => {
   });
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
 
   const goToUserDetail = useCallback(
     (playerId: any): void => {
@@ -32,6 +34,10 @@ const PlayerList: React.FC = () => {
     },
     [navigate]
   );
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
   const columns = useMemo<GridColDef[]>(
     () => [
@@ -97,12 +103,16 @@ const PlayerList: React.FC = () => {
     setPlayers((prev) => {
       return [player as Player, ...prev];
     });
+    setSnackbarMessage("Player added successfully!");
+    setSnackbarOpen(true);
   };
 
   const playerEdited = (player: Partial<Player>): void => {
     setPlayers((prev) => {
       return prev.map((p) => (p.id === player.id ? { ...p, ...player } : p));
     });
+    setSnackbarMessage("Player edited successfully!");
+    setSnackbarOpen(true);
   };
 
   const fetchPlayers = useCallback(async () => {
@@ -161,6 +171,20 @@ const PlayerList: React.FC = () => {
           isRowSelectable={() => false}
         />
       </div>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

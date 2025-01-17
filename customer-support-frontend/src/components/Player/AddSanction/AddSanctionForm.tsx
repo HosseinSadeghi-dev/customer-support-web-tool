@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import {
+  Alert,
   Button,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
+  Snackbar,
 } from "@mui/material";
 import api from "../../../services/api";
 import { useParams } from "react-router";
@@ -24,6 +26,8 @@ const AddSanctionForm: React.FC<Props> = ({ onSanctionAdded }) => {
   const { playerId } = useParams();
   const [type, setType] = useState<SanctionTypes | null>(null);
   const [expiresAt, setExpiresAt] = useState<Dayjs | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,14 +37,18 @@ const AddSanctionForm: React.FC<Props> = ({ onSanctionAdded }) => {
         type,
         expiresAt,
       });
-      alert("Sanction added successfully!");
       setType(null);
       setExpiresAt(null);
       onSanctionAdded();
     } catch (error) {
-      console.error("Error adding sanction:", error);
-      alert("Failed to add sanction.");
+      console.error("Error Editing player:", error);
+      setSnackbarMessage("Failed to add sanction.");
+      setSnackbarOpen(true);
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -88,6 +96,20 @@ const AddSanctionForm: React.FC<Props> = ({ onSanctionAdded }) => {
       <Button type="submit" variant="contained" color="primary">
         Add Sanction
       </Button>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </form>
   );
 };

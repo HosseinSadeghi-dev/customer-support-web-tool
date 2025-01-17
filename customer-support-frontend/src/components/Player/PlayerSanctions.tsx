@@ -6,7 +6,7 @@ import {
   GridPaginationModel,
 } from "@mui/x-data-grid";
 import api from "../../services/api";
-import { Chip, Stack } from "@mui/material";
+import { Alert, Chip, Snackbar, Stack } from "@mui/material";
 import { PaginationResponse } from "../../types/pagination.type";
 import { Sanction, SanctionState } from "../../types/sanction.type";
 import AddSanctionModal from "./AddSanction/AddSanctionModal";
@@ -24,6 +24,8 @@ const PlayerSanctions: React.FC<Props> = ({ playerId }) => {
     page: 0,
   });
   const [loading, setLoading] = useState<boolean>(true);
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
 
   const fetchSanctions = useCallback(async () => {
     try {
@@ -146,6 +148,12 @@ const PlayerSanctions: React.FC<Props> = ({ playerId }) => {
 
   const newSanctionCreated = (): void => {
     fetchSanctions();
+    setSnackbarMessage("Sanction added successfully!");
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   useEffect(() => {
@@ -171,6 +179,20 @@ const PlayerSanctions: React.FC<Props> = ({ playerId }) => {
           isRowSelectable={() => false}
         />
       </div>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
