@@ -6,9 +6,9 @@ import {
   GridPaginationModel,
 } from "@mui/x-data-grid";
 import api from "../../services/api";
-import { Stack } from "@mui/material";
+import { Chip, Stack } from "@mui/material";
 import { PaginationResponse } from "../../types/pagination.type";
-import { Sanction } from "../../types/sanction.type";
+import { Sanction, SanctionState } from "../../types/sanction.type";
 import AddSanctionModal from "./AddSanction/AddSanctionModal";
 import GavelIcon from "@mui/icons-material/Gavel";
 
@@ -58,10 +58,34 @@ const PlayerSanctions: React.FC<Props> = ({ playerId }) => {
     [fetchSanctions]
   );
 
+  const getStateChipColor = (
+    state: SanctionState
+  ): "error" | "warning" | "success" => {
+    switch (state) {
+      case SanctionState.Active:
+        return "error";
+      case SanctionState.Expired:
+        return "warning";
+      case SanctionState.Revoked:
+        return "success";
+    }
+  };
+
   const columns = useMemo<GridColDef[]>(
     () => [
       { field: "type", headerName: "Sanction Type", width: 150 },
-      { field: "state", headerName: "State", width: 150 },
+      {
+        field: "state",
+        headerName: "State",
+        width: 150,
+        renderCell: (param) => (
+          <Chip
+            variant="outlined"
+            label={param.value}
+            color={getStateChipColor(param.value)}
+          />
+        ),
+      },
       {
         field: "issued_at",
         type: "dateTime",
