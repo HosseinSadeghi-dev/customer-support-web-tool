@@ -4,6 +4,7 @@ import {
   revokeSanction,
   listSanctions,
 } from "../models/sanction.model";
+import { logger } from "../config/logger";
 
 interface GetPlayerSanctionsRequest {
   page: number;
@@ -22,7 +23,7 @@ export const addSanctionHandler: RequestHandler = async (req, res, next) => {
     const id = addSanction(playerId, type, expiresAt || null);
     res.status(201).json({ id });
   } catch (error) {
-    console.error("Error adding sanction:", error);
+    logger.error("Error adding sanction:", error);
     next(error);
   }
 };
@@ -43,7 +44,7 @@ export const revokeSanctionHandler = async (
     revokeSanction(id);
     res.sendStatus(204);
   } catch (error) {
-    console.error("Error revoking sanction:", error);
+    logger.error("Error revoking sanction:", error);
     next(error);
   }
 };
@@ -68,7 +69,7 @@ export const listSanctionsHandler = async (
     );
     res.json(sanctions);
   } catch (error) {
-    console.error("Error fetching sanctions:", error);
+    logger.error("Error fetching sanctions:", error);
     next(error);
   }
 };

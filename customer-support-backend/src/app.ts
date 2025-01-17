@@ -18,7 +18,6 @@ app.use("/players", playerRoutes);
 app.use("/sanctions", sanctionRoutes);
 app.use("/tags", tagRoutes);
 
-// Centralized error handling
 app.use((err, req, res, next) => {
   logger.error(err.stack);
   res.status(500).send({ error: "Something went wrong!" });
